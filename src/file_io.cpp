@@ -71,15 +71,23 @@ namespace utils::file_io {
 		}
 	}
 
-	bool is_target_file_within_directory(path dir, path file) {
+	bool is_target_file_within_directory(path dir, path file, bool print_warning) {
 		std::error_code ec;
 		path abs_p = fs::canonical(dir, ec);
 		path abs_t = fs::canonical(file.parent_path(), ec);
+		bool is_safe = false;
 		if(ec) {
 			fprintf(stderr, "ERROR [is_target_file_within_directory]: %s\n", ec.message().c_str());
-			return false;
+			errno = 0;// TODO: print error string as well before clearing.
+		} else {
+			is_safe = abs_t.string().append("/").contains(abs_p.string());
 		}
-		bool is_safe = abs_t.string().append("/").contains(abs_p.string());
+		if(!is_safe && print_warning) {
+			printf("SECURITY WARNING: target file outside of prefix directory:\n");
+			printf("\ttarget: %s\n", file.c_str());
+			printf("\tabs_pdir: %s\n", abs_p.c_str());
+			printf("\tabs_file: %s\n", abs_t.c_str());
+		}
 		return is_safe;
 	}
 }
