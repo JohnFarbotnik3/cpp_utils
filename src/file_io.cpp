@@ -1,4 +1,5 @@
 
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -33,6 +34,7 @@ namespace utils::file_io {
 		std::ifstream file(target, std::ios::binary | std::ios::ate);
 		if (!file.is_open()) {
 			fprintf(stderr, "failed to open file for reading: %s\n", target.c_str());
+			fprintf(stderr, "errno: %s\n", strerror(errno));
 			status = -1;
 			return "";
 		} else {
@@ -45,16 +47,17 @@ namespace utils::file_io {
 		}
 	}
 
-	void write_file(const path target, int& status, const char* data, const size_t size) {
+	void write_file(const path target, int& status, const void* data, const size_t size) {
 		make_dir(target.parent_path(), status);
 		if(status != 0) return;
 
 		std::ofstream file(target, std::ios::binary);
 		if (!file.is_open()) {
 			fprintf(stderr, "failed to open file for writing: %s\n", target.c_str());
+			fprintf(stderr, "errno: %s\n", strerror(errno));
 			status = -1;
 		} else {
-			file.write(data, size);
+			file.write((const char*)data, size);
 			status = 0;
 			errno = 0;
 		}
@@ -65,6 +68,7 @@ namespace utils::file_io {
 		bool success = fs::remove(target, ec);
 		if(!success) {
 			fprintf(stderr, "failed to delete file: %s (error: %s)\n", target.c_str(), ec.message().c_str());
+			fprintf(stderr, "errno: %s\n", strerror(errno));
 			status = -1;
 		} else {
 			status = 0;
