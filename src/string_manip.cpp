@@ -5,6 +5,22 @@
 namespace utils::string_manip {
 	using string = std::string;
 
+	/*
+		convert numerical value to string with given length and alignment.
+	*/
+	template<class T>
+	string get_padded_number_string(string fmt, T value, int length, bool right_aligned) {
+		char buf[64];
+		int len = snprintf(buf, 64, fmt.c_str(), value);
+		string str(buf, len);
+		string pad(length - len, ' ');
+		if(right_aligned) {
+			return pad + str;
+		} else {
+			return str + pad;
+		}
+	}
+
 	// TODO: check if these mutate original string, or if std::string is deep-copied.
 	// !!! WRITE TESTS !!!
 

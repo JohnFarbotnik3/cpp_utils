@@ -1,4 +1,5 @@
 
+#include <charconv>
 #include <map>
 #include <string>
 #include <vector>
@@ -33,6 +34,22 @@ namespace utils::commandline {
 			printf("positional arguments\n");
 			for(const std::string& arg : this->positional_arguments) printf("%s\n", arg.c_str());
 			printf("-----\n");
+		}
+
+		template<class T>
+		T get_named_value(string name, T default_value) const {
+			if(named_arguments.contains(name)) {
+				T value;
+				string str = named_arguments.at(name);
+				std::from_chars_result status = std::from_chars(str.data(), str.data() + str.size(), value);
+				if(status.ec == std::errc::invalid_argument) {
+					printf("[get_named_value()] invalid_argument: %s\n", str.c_str());
+					return default_value;
+				}
+				return value;
+			} else {
+				return default_value;
+			}
 		}
 	};
 

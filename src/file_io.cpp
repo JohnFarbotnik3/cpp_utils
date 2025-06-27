@@ -1,4 +1,7 @@
 
+#ifndef F_file_io
+#define F_file_io
+
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -6,20 +9,20 @@
 
 namespace utils::file_io {
 	using std::string;
-	using std::filesystem::path;
+	using Path = std::filesystem::path;
 	namespace fs = std::filesystem;
 
-	bool can_read_file(const path target) {
+	bool can_read_file(const Path target) {
 		return fs::exists(target) && fs::is_regular_file(target);
 	}
-	bool can_write_file(const path target) {
+	bool can_write_file(const Path target) {
 		return !fs::exists(target) || fs::is_regular_file(target);
 	}
-	bool can_delete_file(const path target) {
+	bool can_delete_file(const Path target) {
 		return fs::exists(target) && fs::is_regular_file(target);
 	}
 
-	void make_dir(const path target, int& status) {
+	void make_dir(const Path target, int& status) {
 		std::error_code ec;
 		fs::create_directories(target, ec);
 		if(ec) {
@@ -30,7 +33,7 @@ namespace utils::file_io {
 		}
 	}
 
-	string read_file(const path target, int& status) {
+	string read_file(const Path target, int& status) {
 		std::ifstream file(target, std::ios::binary | std::ios::ate);
 		if (!file.is_open()) {
 			fprintf(stderr, "failed to open file for reading: %s\n", target.c_str());
@@ -47,7 +50,7 @@ namespace utils::file_io {
 		}
 	}
 
-	void write_file(const path target, int& status, const void* data, const size_t size) {
+	void write_file(const Path target, int& status, const void* data, const size_t size) {
 		make_dir(target.parent_path(), status);
 		if(status != 0) return;
 
@@ -63,7 +66,7 @@ namespace utils::file_io {
 		}
 	}
 
-	void delete_file(const path target, int& status) {
+	void delete_file(const Path target, int& status) {
 		std::error_code ec;
 		bool success = fs::remove(target, ec);
 		if(!success) {
@@ -75,10 +78,10 @@ namespace utils::file_io {
 		}
 	}
 
-	bool is_target_file_within_directory(path dir, path file, bool print_warning) {
+	bool is_target_file_within_directory(Path dir, Path file, bool print_warning) {
 		std::error_code ec;
-		path abs_p = fs::canonical(dir, ec);
-		path abs_t = fs::canonical(file.parent_path(), ec);
+		Path abs_p = fs::canonical(dir, ec);
+		Path abs_t = fs::canonical(file.parent_path(), ec);
 		bool is_safe = false;
 		if(ec) {
 			fprintf(stderr, "ERROR [is_target_file_within_directory]: %s\n", ec.message().c_str());
@@ -94,4 +97,11 @@ namespace utils::file_io {
 		}
 		return is_safe;
 	}
+
+	string remove_trailing_slashes(string path) {
+		while(path.length() > 1 && path.ends_with('/')) path.pop_back();
+		return path;
+	}
 }
+
+#endif
