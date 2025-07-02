@@ -91,7 +91,8 @@ namespace utils::string_manip {
 				list.push_back(str.substr(beg));
 				break;
 			} else {
-				list.push_back(str.substr(beg, end));
+				int len = end - beg;
+				list.push_back(str.substr(beg, len));
 				beg = end + delim.length();
 			}
 		}
