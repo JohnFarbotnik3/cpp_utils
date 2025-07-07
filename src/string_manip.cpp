@@ -13,7 +13,19 @@ namespace utils::string_manip {
 		char buf[64];
 		int len = snprintf(buf, 64, fmt.c_str(), value);
 		string str(buf, len);
-		string pad(length - len, ' ');
+		const int MIN_PAD = 1;
+		string pad(std::max(length - len, MIN_PAD), ' ');
+		if(right_aligned) {
+			return pad + str;
+		} else {
+			return str + pad;
+		}
+	}
+
+	string get_padded_string(string str, int length, bool right_aligned) {
+		int len = str.length();
+		const int MIN_PAD = 1;
+		string pad(std::max(length - len, MIN_PAD), ' ');
 		if(right_aligned) {
 			return pad + str;
 		} else {
