@@ -13,12 +13,12 @@ namespace utils::random {
 	// get distribution function.
 	// usage: distribution(generator)
 	template<typename T>
-	std::uniform_int_distribution<T> rand_uniform(T min, T max) {
+	std::uniform_int_distribution<T> rand_uniform_int(T min, T max) {
 		return std::uniform_int_distribution<T>(min, max);
 	}
 
 	template<typename T>
-	std::uniform_real_distribution<T> rand_uniform(T min, T max) {
+	std::uniform_real_distribution<T> rand_uniform_real(T min, T max) {
 		return std::uniform_real_distribution<T>(min, max);
 	}
 
