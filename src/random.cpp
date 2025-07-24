@@ -26,6 +26,22 @@ namespace utils::random {
 	std::normal_distribution<T> rand_normal(float mean, float stddev) {
 		return std::normal_distribution<T>(mean, stddev);
 	}
+
+	std::vector<int> generate_shuffle_mapping(std::mt19937& gen32, const int length) {
+		// generate pool of indices.
+		std::vector<int> pool(length);
+		for(int x=0;x<length;x++) pool[x] = x;
+		// generate random order of indices.
+		std::vector<int> order;
+		for(int x=0;x<length;x++) {
+			std::uniform_int_distribution<int> distr(0, pool.size()-1);
+			const int ind = distr(gen32);
+			order.push_back(pool[ind]);
+			pool[ind] = pool.back();
+			pool.pop_back();
+		}
+		return order;
+	}
 };
 
 #endif

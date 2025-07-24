@@ -8,6 +8,7 @@ namespace utils::sort_util {
 
 	// https://en.wikipedia.org/wiki/Single-precision_floating-point_format
 	// WARNING: this function does not check endianness - which will affect conversion between floats and uints.
+	// WARNING: I have not thoroughly tested this for correctness, but it seems to work correctly.
 	vector<float> radix_sort_f(const vector<float>& src) {
 		const int LENGTH = src.size();
 		vector<uint32_t> data(LENGTH);
