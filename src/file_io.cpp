@@ -12,16 +12,6 @@ namespace utils::file_io {
 	using Path = std::filesystem::path;
 	namespace fs = std::filesystem;
 
-	bool can_read_file(const Path target) {
-		return fs::exists(target) && fs::is_regular_file(target);
-	}
-	bool can_write_file(const Path target) {
-		return !fs::exists(target) || fs::is_regular_file(target);
-	}
-	bool can_delete_file(const Path target) {
-		return fs::exists(target) && fs::is_regular_file(target);
-	}
-
 	void make_dir(const Path target, int& status) {
 		std::error_code ec;
 		fs::create_directories(target, ec);
@@ -76,26 +66,6 @@ namespace utils::file_io {
 		} else {
 			status = 0;
 		}
-	}
-
-	bool is_target_file_within_directory(Path dir, Path file, bool print_warning) {
-		std::error_code ec;
-		Path abs_p = fs::canonical(dir, ec);
-		Path abs_t = fs::canonical(file.parent_path(), ec);
-		bool is_safe = false;
-		if(ec) {
-			fprintf(stderr, "ERROR [is_target_file_within_directory]: %s\n", ec.message().c_str());
-			errno = 0;// TODO: print error string as well before clearing.
-		} else {
-			is_safe = abs_t.string().append("/").contains(abs_p.string());
-		}
-		if(!is_safe && print_warning) {
-			printf("SECURITY WARNING: target file outside of prefix directory:\n");
-			printf("\ttarget: %s\n", file.c_str());
-			printf("\tabs_pdir: %s\n", abs_p.c_str());
-			printf("\tabs_file: %s\n", abs_t.c_str());
-		}
-		return is_safe;
 	}
 
 	string remove_trailing_slashes(string path) {

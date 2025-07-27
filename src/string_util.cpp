@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace utils::string_manip {
+namespace utils::string_util {
 	using string = std::string;
 
 	/*
