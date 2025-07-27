@@ -3,7 +3,8 @@
 #include <vector>
 
 namespace utils::string_util {
-	using string = std::string;
+	using std::string;
+	using std::string_view;
 
 	/*
 		convert numerical value to string with given length and alignment.
@@ -74,15 +75,28 @@ namespace utils::string_util {
 	// trim
 	// ------------------------------------------------------------
 
-	string trim(string str, string whitespace_chars=" \t") {
+	string trim(const string str, const string whitespace_chars=" \t") {
+		int a = 0;
+		while(a < str.length() && whitespace_chars.contains(str[a])) a++;
+		int b = str.length() - 1;
+		while(b > a && whitespace_chars.contains(str[b])) b--;
+		return str.substr(a, b-a+1);
+	}
+	string_view trim(const string_view str, const string whitespace_chars=" \t") {
+		int a = 0;
+		while(a < str.length() && whitespace_chars.contains(str[a])) a++;
+		int b = str.length() - 1;
+		while(b > a && whitespace_chars.contains(str[b])) b--;
+		return str.substr(a, b-a+1);
+	}
+
+	string trim_leading(const string str, const string whitespace_chars=" \t") {
 		int a = 0;
 		while(a < str.length() && whitespace_chars.contains(str[a])) a++;
 		int b = str.length();
-		while(b > a && whitespace_chars.contains(str[b])) b--;
 		return str.substr(a, b-a);
 	}
-
-	string trim_leading(string str, string whitespace_chars=" \t") {
+	string_view trim_leading(const string_view str, const string whitespace_chars=" \t") {
 		int a = 0;
 		while(a < str.length() && whitespace_chars.contains(str[a])) a++;
 		int b = str.length();
